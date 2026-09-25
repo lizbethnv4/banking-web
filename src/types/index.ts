@@ -45,3 +45,40 @@ export type Transfer = {
   createdAt: string;
   completedAt: string | null;
 };
+
+export const MOVEMENT_TYPES = ["DEBIT", "CREDIT"] as const;
+
+export type MovementType = (typeof MOVEMENT_TYPES)[number];
+
+export type AccountMovement = {
+  id: string;
+  transferId: string;
+  type: MovementType;
+  amount: string;
+  balanceBefore: string;
+  balanceAfter: string;
+  description: string | null;
+  createdAt: string;
+};
+
+export type MovementsPagination = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+export type AccountMovementsResponse = {
+  data: AccountMovement[];
+  pagination: MovementsPagination;
+};
+
+export type GetAccountMovementsQuery = {
+  page: number;
+  pageSize: number;
+  from?: string;
+  to?: string;
+  type?: MovementType;
+  minAmount?: string;
+  maxAmount?: string;
+};
