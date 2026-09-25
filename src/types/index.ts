@@ -82,3 +82,90 @@ export type GetAccountMovementsQuery = {
   minAmount?: string;
   maxAmount?: string;
 };
+
+export const BATCH_STATUSES = [
+  "PENDING",
+  "VALIDATING",
+  "PROCESSING",
+  "COMPLETED",
+  "COMPLETED_WITH_ERRORS",
+  "FAILED",
+] as const;
+
+export type BatchStatus = (typeof BATCH_STATUSES)[number];
+
+export const TERMINAL_BATCH_STATUSES = [
+  "COMPLETED",
+  "COMPLETED_WITH_ERRORS",
+  "FAILED",
+] as const;
+
+export type TerminalBatchStatus = (typeof TERMINAL_BATCH_STATUSES)[number];
+
+export const BATCH_ITEM_STATUSES = [
+  "PENDING",
+  "PROCESSING",
+  "SUCCEEDED",
+  "FAILED",
+  "RETRYING",
+] as const;
+
+export type BatchItemStatus = (typeof BATCH_ITEM_STATUSES)[number];
+
+export type BatchProcess = {
+  id: string;
+  originalFileName: string;
+  status: BatchStatus;
+  totalItems: number;
+  processedItems: number;
+  successfulItems: number;
+  failedItems: number;
+  progressPercentage: string;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  failureMessage: string | null;
+};
+
+export type CreateBatchResponse = {
+  id: string;
+  originalFileName: string;
+  status: BatchStatus;
+  totalItems: number;
+  processedItems: number;
+  successfulItems: number;
+  failedItems: number;
+  progressPercentage: string;
+  createdAt: string;
+};
+
+export type BatchItem = {
+  rowNumber: number;
+  sourceAccountNumber: string;
+  destinationAccountNumber: string;
+  amount: string;
+  status: BatchItemStatus;
+  attemptCount: number;
+  transferId: string | null;
+  errorCode: string | null;
+  errorMessage: string | null;
+  processedAt: string | null;
+};
+
+export type BatchItemsPagination = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+export type BatchItemsResponse = {
+  data: BatchItem[];
+  pagination: BatchItemsPagination;
+};
+
+export type GetBatchItemsQuery = {
+  page: number;
+  pageSize: number;
+  status?: BatchItemStatus;
+};

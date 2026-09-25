@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { BatchesPanel } from "@/components/batches/batches-panel";
 import { PageHeader } from "@/components/layout/page-header";
 
 export const metadata: Metadata = {
@@ -8,9 +9,12 @@ export const metadata: Metadata = {
 
 export default function BatchesPage() {
   return (
-    <PageHeader
-      title="Lotes"
-      description="Procese operaciones mediante archivos por lotes y consulte su estado."
-    />
+    <div className="space-y-8">
+      <PageHeader
+        title="Lotes"
+        description="Cargue un CSV de transferencias, siga el procesamiento asíncrono y consulte las operaciones del lote."
+      />
+      <BatchesPanel />
+    </div>
   );
 }
