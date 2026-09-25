@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AccountsPanel } from "@/components/accounts/accounts-panel";
 import { PageHeader } from "@/components/layout/page-header";
 
 export const metadata: Metadata = {
@@ -8,9 +9,12 @@ export const metadata: Metadata = {
 
 export default function AccountsPage() {
   return (
-    <PageHeader
-      title="Cuentas"
-      description="Consulte y administre las cuentas bancarias del sistema."
-    />
+    <div className="space-y-8">
+      <PageHeader
+        title="Cuentas"
+        description="Cree una cuenta nueva o consulte una existente por ID o número. El saldo inicial y el número de cuenta los genera el backend."
+      />
+      <AccountsPanel />
+    </div>
   );
 }

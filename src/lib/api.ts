@@ -28,6 +28,14 @@ export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError;
 }
 
+export function getUserErrorMessage(error: unknown): string {
+  if (isApiError(error) && error.message.trim().length > 0) {
+    return error.message;
+  }
+
+  return "No se pudo conectar con el servidor. Intente de nuevo.";
+}
+
 function getApiBaseUrl(): string {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
