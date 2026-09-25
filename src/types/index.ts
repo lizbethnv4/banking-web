@@ -20,3 +20,28 @@ export type Account = {
 export type CreateAccountRequest = {
   holderName: string;
 };
+
+export const TRANSFER_STATUSES = ["PENDING", "COMPLETED", "FAILED"] as const;
+
+export type TransferStatus = (typeof TRANSFER_STATUSES)[number];
+
+export type CreateTransferRequest = {
+  sourceAccountId: string;
+  destinationAccountId: string;
+  amount: string;
+  idempotencyKey: string;
+};
+
+export type Transfer = {
+  id: string;
+  reference: string;
+  sourceAccountId: string;
+  destinationAccountId: string;
+  amount: string;
+  status: TransferStatus;
+  idempotencyKey: string;
+  failureCode: string | null;
+  failureMessage: string | null;
+  createdAt: string;
+  completedAt: string | null;
+};
