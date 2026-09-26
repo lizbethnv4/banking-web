@@ -24,6 +24,7 @@ import { StatementSummary } from "@/components/statements/statement-summary";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CopyableId } from "@/components/ui/copyable-id";
 import {
   Card,
   CardAction,
@@ -358,8 +359,11 @@ export function StatementsPanel({ initialAccount = "" }: StatementsPanelProps) {
                 </div>
                 <div>
                   <dt className="text-muted-foreground">ID</dt>
-                  <dd className="mt-1 break-all font-medium">
-                    {statement.account.id}
+                  <dd className="mt-1">
+                    <CopyableId
+                      value={statement.account.id}
+                      label="ID de la cuenta"
+                    />
                   </dd>
                 </div>
                 <div>

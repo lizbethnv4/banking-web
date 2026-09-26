@@ -19,7 +19,7 @@ export function StatementSummary({
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-semibold tracking-tight text-success">
-            {formatMoney(summary.totalCredits, currency)}
+            + {formatMoney(summary.totalCredits, currency)}
           </p>
         </CardContent>
       </Card>
@@ -29,7 +29,7 @@ export function StatementSummary({
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-semibold tracking-tight text-destructive">
-            {formatMoney(summary.totalDebits, currency)}
+            - {formatMoney(summary.totalDebits, currency)}
           </p>
         </CardContent>
       </Card>

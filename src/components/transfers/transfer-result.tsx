@@ -3,6 +3,7 @@ import {
   getTransferStatusLabel,
 } from "@/components/transfers/transfer-status";
 import { Badge } from "@/components/ui/badge";
+import { CopyableId } from "@/components/ui/copyable-id";
 import {
   Card,
   CardContent,
@@ -67,24 +68,35 @@ export function TransferResult({ transfer }: TransferResultProps) {
           </div>
           <div>
             <dt className="text-muted-foreground">ID</dt>
-            <dd className="mt-1 break-all font-medium">{transfer.id}</dd>
+            <dd className="mt-1">
+              <CopyableId value={transfer.id} label="ID de la transferencia" />
+            </dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Cuenta origen</dt>
-            <dd className="mt-1 break-all font-medium">
-              {transfer.sourceAccountId}
+            <dd className="mt-1">
+              <CopyableId
+                value={transfer.sourceAccountId}
+                label="ID de la cuenta origen"
+              />
             </dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Cuenta destino</dt>
-            <dd className="mt-1 break-all font-medium">
-              {transfer.destinationAccountId}
+            <dd className="mt-1">
+              <CopyableId
+                value={transfer.destinationAccountId}
+                label="ID de la cuenta destino"
+              />
             </dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Clave de idempotencia</dt>
-            <dd className="mt-1 break-all font-medium">
-              {transfer.idempotencyKey}
+            <dd className="mt-1">
+              <CopyableId
+                value={transfer.idempotencyKey}
+                label="Clave de idempotencia"
+              />
             </dd>
           </div>
           <div>

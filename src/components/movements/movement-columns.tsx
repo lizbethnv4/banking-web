@@ -11,6 +11,7 @@ import {
   getMovementTypeLabel,
 } from "@/components/movements/movement-type";
 import { Badge } from "@/components/ui/badge";
+import { CopyableId } from "@/components/ui/copyable-id";
 import { formatMoney } from "@/lib/money";
 import type { AccountMovement } from "@/types";
 
@@ -71,7 +72,11 @@ export const movementColumns = columnHelper.columns([
   columnHelper.accessor("transferId", {
     header: "Transferencia",
     cell: (info) => (
-      <span className="font-mono text-xs">{info.getValue()}</span>
+      <CopyableId
+        className="text-xs"
+        value={info.getValue()}
+        label="ID de la transferencia"
+      />
     ),
   }),
 ]);

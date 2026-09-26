@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CopyableId } from "@/components/ui/copyable-id";
 import { formatMoney } from "@/lib/money";
 import type { Account } from "@/types";
 
@@ -42,7 +43,9 @@ export function AccountCard({ account }: AccountCardProps) {
           </div>
           <div>
             <dt className="text-muted-foreground">ID</dt>
-            <dd className="mt-1 break-all font-medium">{account.id}</dd>
+            <dd className="mt-1">
+              <CopyableId value={account.id} label="ID de la cuenta" />
+            </dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Moneda</dt>
