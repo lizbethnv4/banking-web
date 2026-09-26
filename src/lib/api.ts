@@ -95,6 +95,34 @@ async function toApiError(response: Response): Promise<ApiError> {
   });
 }
 
+export async function requestBlob(
+  path: string,
+  options: RequestInit = {},
+): Promise<{
+  blob: Blob;
+  contentType: string;
+  contentDisposition: string | null;
+}> {
+  const headers = new Headers(options.headers);
+
+  const response = await fetch(buildUrl(path), {
+    ...options,
+    headers,
+  });
+
+  if (!response.ok) {
+    throw await toApiError(response);
+  }
+
+  const blob = await response.blob();
+
+  return {
+    blob,
+    contentType: response.headers.get("Content-Type") ?? blob.type,
+    contentDisposition: response.headers.get("Content-Disposition"),
+  };
+}
+
 export async function request<T>(
   path: string,
   options: RequestInit = {},

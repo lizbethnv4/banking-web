@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeftRight, List } from "lucide-react";
+import { ArrowLeftRight, FileText, List } from "lucide-react";
 
 import {
   getAccountStatusClassName,
@@ -75,6 +75,13 @@ export function AccountCard({ account }: AccountCardProps) {
         >
           <ArrowLeftRight />
           Transferir
+        </Link>
+        <Link
+          href={`/statements?account=${encodeURIComponent(account.id)}`}
+          className={buttonVariants({ variant: "outline" })}
+        >
+          <FileText />
+          Estado de cuenta
         </Link>
       </CardFooter>
     </Card>

@@ -83,6 +83,40 @@ export type GetAccountMovementsQuery = {
   maxAmount?: string;
 };
 
+export type AccountStatementAccount = {
+  id: string;
+  accountNumber: string;
+  holderName: string;
+  currency: string;
+  status: AccountStatus;
+};
+
+export type AccountStatementPeriod = {
+  year: number;
+  month: number;
+  from: string;
+  to: string;
+};
+
+export type AccountStatementSummary = {
+  totalCredits: string;
+  totalDebits: string;
+};
+
+export type AccountStatement = {
+  account: AccountStatementAccount;
+  period: AccountStatementPeriod;
+  summary: AccountStatementSummary;
+  movements: AccountMovementsResponse;
+};
+
+export type GetAccountStatementQuery = {
+  year: number;
+  month: number;
+  page: number;
+  pageSize: number;
+};
+
 export const BATCH_STATUSES = [
   "PENDING",
   "VALIDATING",
