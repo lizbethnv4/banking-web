@@ -28,7 +28,7 @@ export function TransfersPanel({
         <CardHeader>
           <CardTitle>Nueva transferencia</CardTitle>
           <CardDescription>
-            Las cuentas se identifican por UUID. El backend valida fondos,
+            Seleccione las cuentas origen y destino. El backend valida fondos,
             estado de las cuentas e idempotencia.
           </CardDescription>
         </CardHeader>

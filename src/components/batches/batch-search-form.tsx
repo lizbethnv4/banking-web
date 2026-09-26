@@ -3,12 +3,12 @@
 import { useState, type FormEvent } from "react";
 import { AlertCircle } from "lucide-react";
 
+import { BatchCombobox } from "@/components/batches/batch-combobox";
 import { getBatch } from "@/lib/batches";
 import { getUserErrorMessage, isApiError, isForbiddenError } from "@/lib/api";
 import type { BatchProcess } from "@/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type BatchSearchFormProps = {
@@ -41,7 +41,7 @@ export function BatchSearchForm({ onFound, onNotFound }: BatchSearchFormProps) {
 
     if (!id) {
       setErrorTitle("No se pudo consultar el lote");
-      setError("Ingrese el ID del lote.");
+      setError("Seleccione un lote.");
       return;
     }
 
@@ -69,17 +69,15 @@ export function BatchSearchForm({ onFound, onNotFound }: BatchSearchFormProps) {
   return (
     <form className="space-y-4" onSubmit={handleSubmit} noValidate>
       <div className="space-y-2">
-        <Label htmlFor="batch-id">ID del lote</Label>
-        <Input
+        <Label htmlFor="batch-id">Lote</Label>
+        <BatchCombobox
           id="batch-id"
           name="batchId"
           value={query}
-          placeholder="UUID del lote"
-          autoComplete="off"
+          placeholder="Seleccionar lote"
           disabled={isSearching}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? "search-batch-error" : undefined}
-          onChange={(event) => setQuery(event.target.value)}
+          invalid={Boolean(error)}
+          onValueChange={setQuery}
         />
       </div>
 

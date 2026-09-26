@@ -136,7 +136,7 @@ export function MovementsPanel({ initialAccount = "" }: MovementsPanelProps) {
 
   function validateFilters(nextFilters: MovementFiltersValue) {
     if (!nextFilters.account.trim()) {
-      return "Ingrese el ID o el número de cuenta.";
+      return "Seleccione una cuenta.";
     }
 
     if (nextFilters.minAmount && !AMOUNT_PATTERN.test(nextFilters.minAmount.trim())) {

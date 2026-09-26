@@ -167,7 +167,7 @@ export function StatementsPanel({ initialAccount = "" }: StatementsPanelProps) {
 
   function validateForm(values: StatementFormValue) {
     if (!values.account.trim()) {
-      return "Ingrese el ID o el número de cuenta.";
+      return "Seleccione una cuenta.";
     }
 
     if (parseYear(values.year) === null) {

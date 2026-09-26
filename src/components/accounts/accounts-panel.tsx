@@ -46,7 +46,7 @@ export function AccountsPanel() {
           <CardHeader>
             <CardTitle>Buscar cuenta</CardTitle>
             <CardDescription>
-              Consulte por el ID (UUID) o por el número de cuenta.
+              Seleccione una cuenta para consultar su detalle.
             </CardDescription>
           </CardHeader>
           <CardContent>

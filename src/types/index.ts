@@ -62,6 +62,15 @@ export type Account = {
   status: AccountStatus;
 };
 
+export type AccountOption = {
+  id: string;
+  accountNumber: string;
+  holderName: string;
+  balance: string;
+  currency: string;
+  status: AccountStatus;
+};
+
 export type CreateAccountRequest = {
   holderName: string;
 };
@@ -204,6 +213,17 @@ export type BatchProcess = {
   startedAt: string | null;
   completedAt: string | null;
   failureMessage: string | null;
+};
+
+export type BatchProcessOption = {
+  id: string;
+  originalFileName: string;
+  status: BatchStatus;
+  totalItems: number;
+  processedItems: number;
+  successfulItems: number;
+  failedItems: number;
+  createdAt: string;
 };
 
 export type CreateBatchResponse = {

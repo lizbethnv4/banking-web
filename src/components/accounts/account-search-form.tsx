@@ -3,12 +3,12 @@
 import { useState, type FormEvent } from "react";
 import { AlertCircle } from "lucide-react";
 
+import { AccountCombobox } from "@/components/accounts/account-combobox";
 import { getAccountByIdOrNumber } from "@/lib/accounts";
 import { getUserErrorMessage, isApiError } from "@/lib/api";
 import type { Account } from "@/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type AccountSearchFormProps = {
@@ -32,7 +32,7 @@ export function AccountSearchForm({
 
     if (!idOrNumber) {
       setErrorTitle("No se pudo consultar la cuenta");
-      setError("Ingrese el ID o el número de cuenta.");
+      setError("Seleccione una cuenta.");
       return;
     }
 
@@ -41,7 +41,6 @@ export function AccountSearchForm({
 
     try {
       const account = await getAccountByIdOrNumber(idOrNumber);
-      console.log(account);
       onFound(account);
     } catch (caughtError) {
       onNotFound();
@@ -50,7 +49,6 @@ export function AccountSearchForm({
       setErrorTitle(
         notFound ? "No se encontró la cuenta" : "No se pudo consultar la cuenta",
       );
-      console.log(caughtError);
       setError(getUserErrorMessage(caughtError));
     } finally {
       setIsSearching(false);
@@ -60,17 +58,15 @@ export function AccountSearchForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit} noValidate>
       <div className="space-y-2">
-        <Label htmlFor="account-id-or-number">ID o número de cuenta</Label>
-        <Input
+        <Label htmlFor="account-id-or-number">Cuenta</Label>
+        <AccountCombobox
           id="account-id-or-number"
           name="idOrNumber"
           value={query}
-          placeholder="UUID o número de cuenta"
-          autoComplete="off"
+          placeholder="Seleccionar cuenta"
           disabled={isSearching}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? "search-account-error" : undefined}
-          onChange={(event) => setQuery(event.target.value)}
+          invalid={Boolean(error)}
+          onValueChange={setQuery}
         />
       </div>
 

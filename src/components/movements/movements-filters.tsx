@@ -1,5 +1,6 @@
 "use client";
 
+import { AccountCombobox } from "@/components/accounts/account-combobox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -56,15 +57,14 @@ export function MovementsFilters({
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div className="space-y-2 md:col-span-2 xl:col-span-1">
-          <Label htmlFor="movement-account">ID o número de cuenta</Label>
-          <Input
+          <Label htmlFor="movement-account">Cuenta</Label>
+          <AccountCombobox
             id="movement-account"
             value={values.account}
-            placeholder="UUID o número de cuenta"
-            autoComplete="off"
+            placeholder="Seleccionar cuenta"
             disabled={isLoading}
-            onChange={(event) =>
-              onChange({ ...values, account: event.target.value })
+            onValueChange={(accountId) =>
+              onChange({ ...values, account: accountId })
             }
           />
         </div>

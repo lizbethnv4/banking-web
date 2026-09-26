@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { AlertCircle } from "lucide-react";
 
+import { AccountCombobox } from "@/components/accounts/account-combobox";
 import { getTransferErrorTitle } from "@/components/transfers/transfer-status";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,7 @@ export function TransferForm({
 
     if (!source) {
       setErrorTitle("No se pudo completar la transferencia");
-      setError("Ingrese el ID de la cuenta origen.");
+      setError("Seleccione la cuenta origen.");
       return;
     }
 
@@ -66,7 +67,7 @@ export function TransferForm({
 
     if (!destination) {
       setErrorTitle("No se pudo completar la transferencia");
-      setError("Ingrese el ID de la cuenta destino.");
+      setError("Seleccione la cuenta destino.");
       return;
     }
 
@@ -134,28 +135,30 @@ export function TransferForm({
   return (
     <form className="space-y-4" onSubmit={handleSubmit} noValidate>
       <div className="space-y-2">
-        <Label htmlFor="source-account-id">ID de cuenta origen</Label>
-        <Input
+        <Label htmlFor="source-account-id">Cuenta origen</Label>
+        <AccountCombobox
           id="source-account-id"
           name="sourceAccountId"
           value={sourceAccountId}
-          placeholder="UUID de la cuenta origen"
-          autoComplete="off"
+          excludeAccountId={destinationAccountId || undefined}
+          placeholder="Seleccionar cuenta"
           disabled={isSubmitting}
-          onChange={(event) => setSourceAccountId(event.target.value)}
+          invalid={Boolean(error)}
+          onValueChange={setSourceAccountId}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="destination-account-id">ID de cuenta destino</Label>
-        <Input
+        <Label htmlFor="destination-account-id">Cuenta destino</Label>
+        <AccountCombobox
           id="destination-account-id"
           name="destinationAccountId"
           value={destinationAccountId}
-          placeholder="UUID de la cuenta destino"
-          autoComplete="off"
+          excludeAccountId={sourceAccountId || undefined}
+          placeholder="Seleccionar cuenta"
           disabled={isSubmitting}
-          onChange={(event) => setDestinationAccountId(event.target.value)}
+          invalid={Boolean(error)}
+          onValueChange={setDestinationAccountId}
         />
       </div>
 

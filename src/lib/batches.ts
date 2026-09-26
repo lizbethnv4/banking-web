@@ -1,24 +1,49 @@
 import { request } from "@/lib/api";
+import { createOptionsStore } from "@/lib/options-store";
 import type {
   BatchItemsResponse,
   BatchProcess,
+  BatchProcessOption,
   CreateBatchResponse,
   GetBatchItemsQuery,
 } from "@/types";
+
+const batchOptionsStore = createOptionsStore(() =>
+  request<BatchProcessOption[]>("/batch-transfers/options"),
+);
+
+export function subscribeBatchOptions(listener: () => void) {
+  return batchOptionsStore.subscribe(listener);
+}
+
+export function getBatchOptionsSnapshot() {
+  return batchOptionsStore.getSnapshot();
+}
+
+export function invalidateBatchOptions() {
+  batchOptionsStore.invalidate();
+}
+
+export function getBatchOptions() {
+  return batchOptionsStore.load();
+}
 
 export const BATCH_CSV_HEADER =
   "sourceAccountNumber,destinationAccountNumber,amount";
 export const BATCH_MAX_ITEMS = 10_000;
 export const BATCH_MULTIPART_FIELD = "file";
 
-export function createBatch(file: File) {
+export async function createBatch(file: File) {
   const formData = new FormData();
   formData.append(BATCH_MULTIPART_FIELD, file);
 
-  return request<CreateBatchResponse>("/batch-transfers", {
+  const created = await request<CreateBatchResponse>("/batch-transfers", {
     method: "POST",
     body: formData,
   });
+
+  invalidateBatchOptions();
+  return created;
 }
 
 export function getBatch(id: string) {

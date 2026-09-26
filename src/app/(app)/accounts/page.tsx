@@ -12,7 +12,7 @@ export default function AccountsPage() {
     <div className="space-y-8">
       <PageHeader
         title="Cuentas"
-        description="Consulte una cuenta por ID o número. Los administradores pueden crear cuentas nuevas."
+        description="Seleccione una cuenta para consultar su detalle. Los administradores pueden crear cuentas nuevas."
       />
       <AccountsPanel />
     </div>

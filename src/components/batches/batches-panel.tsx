@@ -264,7 +264,7 @@ export function BatchesPanel() {
           <CardHeader>
             <CardTitle>Consultar lote</CardTitle>
             <CardDescription>
-              Consulte un lote existente por su identificador.
+              Seleccione un lote existente para consultar su estado.
             </CardDescription>
           </CardHeader>
           <CardContent>
