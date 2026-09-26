@@ -12,7 +12,7 @@ export default function AccountsPage() {
     <div className="space-y-8">
       <PageHeader
         title="Cuentas"
-        description="Cree una cuenta nueva o consulte una existente por ID o número. El saldo inicial y el número de cuenta los genera el backend."
+        description="Consulte una cuenta por ID o número. Los administradores pueden crear cuentas nuevas."
       />
       <AccountsPanel />
     </div>

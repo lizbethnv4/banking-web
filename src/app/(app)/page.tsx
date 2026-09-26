@@ -15,7 +15,7 @@ export default function HomePage() {
     <div className="space-y-8">
       <header className="max-w-2xl">
         <p className="text-sm font-medium text-primary">Banking System</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight break-words text-foreground sm:text-3xl">
           Gestión de Cuentas y Transferencias Bancarias
         </h1>
         <p className="mt-3 text-muted-foreground">

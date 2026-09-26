@@ -4,6 +4,51 @@ export type ApiErrorBody = {
   details?: unknown;
 };
 
+export const USER_ROLES = ["ADMIN", "USER"] as const;
+
+export type UserRole = (typeof USER_ROLES)[number];
+
+export const USER_STATUSES = ["ACTIVE", "INACTIVE"] as const;
+
+export type UserStatus = (typeof USER_STATUSES)[number];
+
+export type AuthUser = {
+  id: string;
+  email: string;
+  role: UserRole;
+};
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  accessToken: string;
+};
+
+export type RegisterRequest = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type RegisterResponse = {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+};
+
+export type JwtPayload = {
+  sub: string;
+  email: string;
+  role: UserRole;
+  exp: number;
+  iat?: number;
+};
+
 export const ACCOUNT_STATUSES = ["ACTIVE", "BLOCKED", "CLOSED"] as const;
 
 export type AccountStatus = (typeof ACCOUNT_STATUSES)[number];

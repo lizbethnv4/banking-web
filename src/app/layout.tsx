@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import { AuthProvider } from "@/components/auth/auth-provider";
 import { Geist, Geist_Mono } from "next/font/google";
-
-import { AppShell } from "@/components/layout/app-shell";
+import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
 
@@ -15,6 +14,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   title: {
     default: "Banking System",
@@ -27,10 +32,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} min-h-dvh antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <AppShell>{children}</AppShell>
+      <body className="min-h-dvh">
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

@@ -12,7 +12,7 @@ export default function BatchesPage() {
     <div className="space-y-8">
       <PageHeader
         title="Lotes"
-        description="Cargue un CSV de transferencias, siga el procesamiento asíncrono y consulte las operaciones del lote."
+        description="Consulte un lote por ID. Los administradores pueden cargar un CSV de transferencias."
       />
       <BatchesPanel />
     </div>

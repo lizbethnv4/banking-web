@@ -4,8 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import type { PaginationState } from "@tanstack/react-table";
 
+import { RoleGuard } from "@/components/auth/role-guard";
+import { useAuth } from "@/components/auth/auth-provider";
 import { BatchItemsDataTable, PAGE_SIZE_OPTIONS } from "@/components/batches/batch-items-data-table";
 import { BatchProgressCard } from "@/components/batches/batch-progress";
+import { BatchSearchForm } from "@/components/batches/batch-search-form";
 import { isTerminalBatchStatus } from "@/components/batches/batch-status";
 import { BatchUploadForm } from "@/components/batches/batch-upload-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -16,8 +19,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getUserErrorMessage, isApiError } from "@/lib/api";
+import { getUserErrorMessage, isApiError, isForbiddenError } from "@/lib/api";
 import { createBatch, getBatch, getBatchItems, toBatchProcess } from "@/lib/batches";
+import { isAdmin } from "@/lib/roles";
+import { cn } from "@/lib/utils";
 import type {
   BatchItemStatus,
   BatchItemsResponse,
@@ -27,7 +32,11 @@ import type {
 const POLL_INTERVAL_MS = 2000;
 const DEFAULT_PAGE_SIZE = 20;
 
-function getBatchErrorTitle(code?: string) {
+function getBatchErrorTitle(code?: string, forbidden?: boolean) {
+  if (forbidden) {
+    return "Acceso no autorizado";
+  }
+
   switch (code) {
     case "VALIDATION_ERROR":
       return "Archivo CSV inválido";
@@ -39,6 +48,8 @@ function getBatchErrorTitle(code?: string) {
 }
 
 export function BatchesPanel() {
+  const { user } = useAuth();
+  const canCreateBatches = isAdmin(user);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [batch, setBatch] = useState<BatchProcess | null>(null);
@@ -82,6 +93,7 @@ export function BatchesPanel() {
           setErrorTitle(
             getBatchErrorTitle(
               isApiError(caughtError) ? caughtError.code : undefined,
+              isForbiddenError(caughtError),
             ),
           );
           setError(getUserErrorMessage(caughtError));
@@ -127,6 +139,7 @@ export function BatchesPanel() {
           setErrorTitle(
             getBatchErrorTitle(
               isApiError(caughtError) ? caughtError.code : undefined,
+              isForbiddenError(caughtError),
             ),
           );
           setError(getUserErrorMessage(caughtError));
@@ -174,7 +187,10 @@ export function BatchesPanel() {
       setItemsResult(null);
     } catch (caughtError) {
       setErrorTitle(
-        getBatchErrorTitle(isApiError(caughtError) ? caughtError.code : undefined),
+        getBatchErrorTitle(
+          isApiError(caughtError) ? caughtError.code : undefined,
+          isForbiddenError(caughtError),
+        ),
       );
       setError(getUserErrorMessage(caughtError));
     } finally {
@@ -190,6 +206,14 @@ export function BatchesPanel() {
     setPageSize(DEFAULT_PAGE_SIZE);
     setStatusFilter("");
     setError(null);
+  }
+
+  function handleFound(nextBatch: BatchProcess) {
+    setError(null);
+    setBatch(nextBatch);
+    setPage(1);
+    setStatusFilter("");
+    setItemsResult(null);
   }
 
   function handleStatusChange(nextStatus: BatchItemStatus | "") {
@@ -210,26 +234,47 @@ export function BatchesPanel() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Cargar archivo CSV</CardTitle>
-          <CardDescription>
-            El backend valida la estructura del archivo y procesa las
-            transferencias de forma asíncrona.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <BatchUploadForm
-            selectedFile={selectedFile}
-            isUploading={isUploading}
-            isProcessing={isProcessing}
-            onFileChange={handleFileChange}
-            onSubmit={() => {
-              void handleUpload();
-            }}
-          />
-        </CardContent>
-      </Card>
+      <div
+        className={cn("grid gap-6", canCreateBatches && "lg:grid-cols-2")}
+      >
+        <RoleGuard roles={["ADMIN"]}>
+          <Card>
+            <CardHeader>
+              <CardTitle>Cargar archivo CSV</CardTitle>
+              <CardDescription>
+                El backend valida la estructura del archivo y procesa las
+                transferencias de forma asíncrona.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BatchUploadForm
+                selectedFile={selectedFile}
+                isUploading={isUploading}
+                isProcessing={isProcessing}
+                onFileChange={handleFileChange}
+                onSubmit={() => {
+                  void handleUpload();
+                }}
+              />
+            </CardContent>
+          </Card>
+        </RoleGuard>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Consultar lote</CardTitle>
+            <CardDescription>
+              Consulte un lote existente por su identificador.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <BatchSearchForm
+              onFound={handleFound}
+              onNotFound={() => setBatch(null)}
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {error ? (
         <Alert variant="destructive">

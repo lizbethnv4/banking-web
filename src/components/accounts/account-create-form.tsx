@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { AlertCircle } from "lucide-react";
 
 import { createAccount } from "@/lib/accounts";
-import { getUserErrorMessage } from "@/lib/api";
+import { getUserErrorMessage, isForbiddenError } from "@/lib/api";
 import type { Account } from "@/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ type AccountCreateFormProps = {
 export function AccountCreateForm({ onCreated }: AccountCreateFormProps) {
   const [holderName, setHolderName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState("No se pudo crear la cuenta");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -28,11 +29,13 @@ export function AccountCreateForm({ onCreated }: AccountCreateFormProps) {
     const trimmedName = holderName.trim();
 
     if (!trimmedName) {
+      setErrorTitle("No se pudo crear la cuenta");
       setError("Ingrese el nombre del titular.");
       return;
     }
 
     if (trimmedName.length > HOLDER_NAME_MAX_LENGTH) {
+      setErrorTitle("No se pudo crear la cuenta");
       setError("El nombre del titular no puede superar 200 caracteres.");
       return;
     }
@@ -45,6 +48,11 @@ export function AccountCreateForm({ onCreated }: AccountCreateFormProps) {
       setHolderName("");
       onCreated(account);
     } catch (caughtError) {
+      setErrorTitle(
+        isForbiddenError(caughtError)
+          ? "Acceso no autorizado"
+          : "No se pudo crear la cuenta",
+      );
       setError(getUserErrorMessage(caughtError));
     } finally {
       setIsSubmitting(false);
@@ -72,7 +80,7 @@ export function AccountCreateForm({ onCreated }: AccountCreateFormProps) {
       {error ? (
         <Alert id="create-account-error" variant="destructive">
           <AlertCircle />
-          <AlertTitle>No se pudo crear la cuenta</AlertTitle>
+          <AlertTitle>{errorTitle}</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : null}

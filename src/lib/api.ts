@@ -1,3 +1,8 @@
+import {
+  clearAccessToken,
+  getAccessToken,
+  notifyUnauthorized,
+} from "@/lib/auth-session";
 import type { ApiErrorBody } from "@/types";
 
 export class ApiError extends Error {
@@ -28,6 +33,10 @@ export function isApiError(error: unknown): error is ApiError {
   return error instanceof ApiError;
 }
 
+export function isForbiddenError(error: unknown): boolean {
+  return isApiError(error) && (error.status === 403 || error.code === "FORBIDDEN");
+}
+
 export function getUserErrorMessage(error: unknown): string {
   if (isApiError(error) && error.message.trim().length > 0) {
     return error.message;
@@ -49,6 +58,27 @@ function getApiBaseUrl(): string {
 function buildUrl(path: string): string {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${getApiBaseUrl()}${normalizedPath}`;
+}
+
+function normalizePath(path: string): string {
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
+function isPublicApiPath(path: string): boolean {
+  const normalizedPath = normalizePath(path);
+  return normalizedPath === "/auth/login" || normalizedPath === "/auth/register";
+}
+
+function applyAuthHeader(path: string, headers: Headers): void {
+  if (isPublicApiPath(path) || headers.has("Authorization")) {
+    return;
+  }
+
+  const accessToken = getAccessToken();
+
+  if (accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
 }
 
 function readApiErrorBody(value: unknown): ApiErrorBody | null {
@@ -95,6 +125,21 @@ async function toApiError(response: Response): Promise<ApiError> {
   });
 }
 
+async function throwIfNotOk(path: string, response: Response): Promise<void> {
+  if (response.ok) {
+    return;
+  }
+
+  const error = await toApiError(response);
+
+  if (error.status === 401 && !isPublicApiPath(path)) {
+    clearAccessToken();
+    notifyUnauthorized();
+  }
+
+  throw error;
+}
+
 export async function requestBlob(
   path: string,
   options: RequestInit = {},
@@ -104,15 +149,14 @@ export async function requestBlob(
   contentDisposition: string | null;
 }> {
   const headers = new Headers(options.headers);
+  applyAuthHeader(path, headers);
 
   const response = await fetch(buildUrl(path), {
     ...options,
     headers,
   });
 
-  if (!response.ok) {
-    throw await toApiError(response);
-  }
+  await throwIfNotOk(path, response);
 
   const blob = await response.blob();
 
@@ -128,6 +172,7 @@ export async function request<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const headers = new Headers(options.headers);
+  applyAuthHeader(path, headers);
 
   if (!headers.has("Accept")) {
     headers.set("Accept", "application/json");
@@ -146,9 +191,7 @@ export async function request<T>(
     headers,
   });
 
-  if (!response.ok) {
-    throw await toApiError(response);
-  }
+  await throwIfNotOk(path, response);
 
   if (response.status === 204) {
     return undefined as T;

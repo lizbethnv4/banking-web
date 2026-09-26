@@ -41,7 +41,14 @@ export function BatchUploadForm({
     >
       <div className="rounded-lg bg-muted/50 px-3 py-3 text-sm text-muted-foreground">
         <p>Cabecera esperada:</p>
-        <p className="mt-1 font-mono text-foreground">{BATCH_CSV_HEADER}</p>
+        <p className="mt-1 font-mono text-xs leading-relaxed text-foreground sm:text-sm">
+          {BATCH_CSV_HEADER.split(",").map((column, index, columns) => (
+            <span key={column} className="inline-block">
+              {column}
+              {index < columns.length - 1 ? "," : ""}
+            </span>
+          ))}
+        </p>
         <p className="mt-2">
           Máximo {BATCH_MAX_ITEMS.toLocaleString("es-DO")} transferencias. Un
           CSV estructuralmente inválido se rechaza completo; los errores de
